@@ -1,0 +1,1914 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flammable Corp. — Plugins Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+    --bg: #0d0d0f;
+    --surface: #141418;
+    --surface-2: #1a1a1f;
+    --surface-3: #1e1e24;
+    --border: #2a2a30;
+    --border-light: #3a3a42;
+    --text: #e4e4e7;
+    --text-muted: #8a8a93;
+    --text-dim: #5c5c66;
+    --accent: #d97706;
+    --accent-hover: #f59e0b;
+    --success: #22c55e;
+    --danger: #ef4444;
+    --info: #3b82f6;
+    --radius: 6px;
+    --font-mono: 'JetBrains Mono', monospace;
+}
+
+[data-theme="light"] {
+    --bg: #fafafa;
+    --surface: #ffffff;
+    --surface-2: #f4f4f5;
+    --surface-3: #e4e4e7;
+    --border: #e4e4e7;
+    --border-light: #d4d4d8;
+    --text: #18181b;
+    --text-muted: #52525b;
+    --text-dim: #a1a1aa;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 100vh;
+    transition: background 0.2s, color 0.2s;
+}
+
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; }
+
+.announcement {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 8px 24px;
+    font-size: 12px;
+    color: var(--text-muted);
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+.announcement strong { color: var(--text); }
+.announcement .close-ann { background: none; border: none; color: var(--text-dim); cursor: pointer; font-size: 14px; }
+
+header {
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    background: var(--bg);
+    position: sticky;
+    top: 0;
+    z-index: 40;
+}
+
+.header-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 56px;
+    gap: 16px;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--text);
+    flex-shrink: 0;
+}
+
+.brand-mark {
+    width: 26px;
+    height: 26px;
+    background: var(--accent);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: #000;
+}
+
+nav.main-nav {
+    display: flex;
+    gap: 4px;
+    font-size: 13px;
+    color: var(--text-muted);
+    flex: 1;
+}
+
+nav.main-nav a {
+    padding: 6px 10px;
+    border-radius: var(--radius);
+    transition: background 0.15s, color 0.15s;
+    white-space: nowrap;
+}
+
+nav.main-nav a:hover, nav.main-nav a.active {
+    background: var(--surface);
+    color: var(--text);
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.search-trigger {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text-muted);
+    font-size: 12px;
+    cursor: pointer;
+    min-width: 200px;
+    transition: border-color 0.15s;
+}
+
+.search-trigger:hover { border-color: var(--border-light); }
+
+.search-trigger kbd {
+    margin-left: auto;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    padding: 2px 5px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    color: var(--text-dim);
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 7px 14px;
+    font-size: 13px;
+    font-weight: 500;
+    border-radius: var(--radius);
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+}
+
+.btn-primary { background: var(--text); color: var(--bg); border-color: var(--text); }
+.btn-primary:hover { background: #fff; }
+.btn-secondary { background: transparent; color: var(--text); border-color: var(--border-light); }
+.btn-secondary:hover { background: var(--surface); border-color: var(--text-muted); }
+.btn-ghost { background: transparent; color: var(--text-muted); border: none; }
+.btn-ghost:hover { color: var(--text); background: var(--surface); }
+.btn-danger { background: var(--danger); color: #fff; border-color: var(--danger); }
+.btn-danger:hover { background: #dc2626; }
+.btn-sm { padding: 5px 10px; font-size: 12px; }
+.btn-icon { padding: 6px; width: 30px; height: 30px; }
+
+.icon-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    width: 30px;
+    height: 30px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+}
+
+.icon-btn:hover { color: var(--text); border-color: var(--border-light); background: var(--surface); }
+
+.user-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 10px 4px 4px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 13px;
+}
+
+.user-avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 3px;
+    background: var(--surface-3);
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.user-avatar img { width: 100%; height: 100%; image-rendering: pixelated; }
+
+.user-balance {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+.balance-top {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text);
+}
+
+.balance-top .currency { color: var(--success); font-weight: 500; }
+
+main {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 32px 24px 80px;
+}
+
+.layout {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 32px;
+}
+
+.sidebar {
+    position: sticky;
+    top: 76px;
+    align-self: start;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.sidebar-group h4 {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-dim);
+    margin-bottom: 6px;
+    padding: 0 8px;
+}
+
+.sidebar-group a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px;
+    border-radius: var(--radius);
+    font-size: 13px;
+    color: var(--text-muted);
+    transition: background 0.1s, color 0.1s;
+}
+
+.sidebar-group a:hover, .sidebar-group a.active {
+    background: var(--surface);
+    color: var(--text);
+}
+
+.sidebar-group a .count {
+    margin-left: auto;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-dim);
+}
+
+.page-intro { margin-bottom: 28px; display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; flex-wrap: wrap; }
+
+.page-intro h1 {
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: -0.4px;
+    margin-bottom: 4px;
+}
+
+.page-intro p { color: var(--text-muted); font-size: 13px; max-width: 560px; }
+
+.view-toggle {
+    display: flex;
+    gap: 4px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 3px;
+}
+
+.view-toggle button {
+    background: none;
+    border: none;
+    padding: 4px 8px;
+    font-size: 12px;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.view-toggle button.active { background: var(--surface-3); color: var(--text); }
+
+.toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+.toolbar-search {
+    flex: 1;
+    min-width: 200px;
+    position: relative;
+}
+
+.toolbar-search input {
+    width: 100%;
+    padding: 7px 12px 7px 32px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    font-size: 13px;
+    outline: none;
+}
+
+.toolbar-search input:focus { border-color: var(--border-light); }
+
+.toolbar-search .search-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-dim);
+    pointer-events: none;
+}
+
+select.sort-select {
+    padding: 7px 10px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    font-size: 12px;
+    outline: none;
+    cursor: pointer;
+}
+
+.plugin-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+
+.plugin-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    background: var(--surface);
+    transition: background 0.1s;
+    gap: 16px;
+    cursor: pointer;
+}
+
+.plugin-row:hover { background: var(--surface-2); }
+
+.plugin-row.selected { background: var(--surface-2); border-left: 2px solid var(--accent); }
+
+.plugin-info { display: flex; align-items: center; gap: 14px; flex: 1; min-width: 0; }
+
+.plugin-icon {
+    width: 36px;
+    height: 36px;
+    background: var(--surface-3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+.plugin-meta { min-width: 0; }
+
+.plugin-name {
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.badge {
+    font-size: 9px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    padding: 2px 6px;
+    border-radius: 3px;
+    background: var(--surface-3);
+    color: var(--text-muted);
+}
+
+.badge.bestseller { background: rgba(217, 119, 6, 0.15); color: var(--accent); }
+.badge.free { background: rgba(34, 197, 94, 0.15); color: var(--success); }
+
+.plugin-desc {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.plugin-stats { display: flex; gap: 16px; font-size: 11px; color: var(--text-dim); margin-top: 4px; }
+
+.plugin-stats span { display: flex; align-items: center; gap: 4px; }
+
+.plugin-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-shrink: 0;
+}
+
+.plugin-version, .plugin-price {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-muted);
+    min-width: 50px;
+    text-align: right;
+}
+
+.plugin-price.free { color: var(--success); }
+
+.grid-view {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 12px;
+}
+
+.grid-view .plugin-row {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 16px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: var(--surface);
+}
+
+.grid-view .plugin-row.selected { border-color: var(--accent); }
+
+.grid-view .plugin-actions { margin-top: 12px; justify-content: space-between; border-top: 1px solid var(--border); padding-top: 12px; }
+
+.empty-state {
+    padding: 48px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 13px;
+}
+
+.empty-state h3 { color: var(--text); font-size: 14px; margin-bottom: 6px; }
+
+.drawer-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 60;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+}
+
+.drawer-overlay.open { opacity: 1; pointer-events: auto; }
+
+.drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 420px;
+    max-width: 100%;
+    background: var(--surface);
+    border-left: 1px solid var(--border);
+    transform: translateX(100%);
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 61;
+    display: flex;
+    flex-direction: column;
+}
+
+.drawer.open { transform: translateX(0); }
+
+.drawer-head {
+    padding: 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.drawer-head .drawer-title { flex: 1; }
+.drawer-head h2 { font-size: 16px; font-weight: 600; margin-bottom: 2px; }
+.drawer-head .drawer-sub { font-size: 12px; color: var(--text-muted); }
+
+.drawer-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+.drawer-body h3 {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--text-dim);
+    margin: 20px 0 8px;
+}
+
+.drawer-body h3:first-child { margin-top: 0; }
+
+.drawer-body p { font-size: 13px; color: var(--text-muted); margin-bottom: 12px; }
+
+.drawer-body ul { list-style: none; padding: 0; }
+.drawer-body ul li { font-size: 13px; color: var(--text-muted); padding: 4px 0; padding-left: 18px; position: relative; }
+.drawer-body ul li::before { content: "•"; position: absolute; left: 6px; color: var(--text-dim); }
+
+.changelog-item {
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+}
+.changelog-item:last-child { border-bottom: none; }
+.changelog-item .cl-ver { font-family: var(--font-mono); font-size: 12px; color: var(--text); font-weight: 500; }
+.changelog-item .cl-date { font-size: 11px; color: var(--text-dim); margin-left: 8px; }
+.changelog-item .cl-desc { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+.drawer-foot {
+    padding: 16px 20px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 8px;
+}
+
+.drawer-foot .btn { flex: 1; }
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s;
+}
+
+.modal-overlay.open { opacity: 1; pointer-events: auto; }
+
+.modal {
+    background: var(--surface);
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    width: 100%;
+    max-width: 380px;
+    padding: 24px;
+    position: relative;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal-lg { max-width: 560px; }
+
+.modal h3 { font-size: 15px; font-weight: 600; margin-bottom: 16px; }
+
+.modal-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    font-size: 18px;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.modal-close:hover { color: var(--text); }
+
+.form-field { margin-bottom: 12px; }
+.form-field label {
+    display: block;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    margin-bottom: 5px;
+}
+.form-field input, .form-field textarea, .form-field select {
+    width: 100%;
+    padding: 8px 10px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.15s;
+}
+.form-field input:focus, .form-field textarea:focus, .form-field select:focus { border-color: var(--text-muted); }
+.form-field textarea { resize: vertical; min-height: 80px; font-family: var(--font-mono); }
+.form-field .mono { font-family: var(--font-mono); }
+
+.toggle-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+}
+.toggle-row:last-child { border-bottom: none; }
+.toggle-row .label { color: var(--text); }
+.toggle-row .desc { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+
+.toggle {
+    position: relative;
+    width: 34px;
+    height: 20px;
+    background: var(--surface-3);
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background 0.2s;
+    border: none;
+    flex-shrink: 0;
+}
+.toggle::after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 16px;
+    height: 16px;
+    background: var(--text-muted);
+    border-radius: 50%;
+    transition: transform 0.2s, background 0.2s;
+}
+.toggle.on { background: var(--accent); }
+.toggle.on::after { transform: translateX(14px); background: #fff; }
+
+.command-palette-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 200;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 15vh;
+}
+
+.command-palette-overlay.open { opacity: 1; pointer-events: auto; }
+
+.command-palette {
+    background: var(--surface);
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    width: 100%;
+    max-width: 520px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+    overflow: hidden;
+    transform: scale(0.97);
+    transition: transform 0.15s;
+}
+
+.command-palette-overlay.open .command-palette { transform: scale(1); }
+
+.palette-input {
+    width: 100%;
+    padding: 14px 16px;
+    background: var(--surface);
+    border: none;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    font-size: 14px;
+    outline: none;
+}
+
+.palette-list { max-height: 320px; overflow-y: auto; padding: 6px; }
+
+.palette-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.palette-item:hover, .palette-item.active { background: var(--surface-2); color: var(--text); }
+
+.palette-item .pi-icon {
+    width: 24px;
+    height: 24px;
+    background: var(--surface-3);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: var(--text-dim);
+    flex-shrink: 0;
+}
+
+.palette-item .pi-label { flex: 1; }
+.palette-item .pi-shortcut { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); }
+
+.palette-empty { padding: 24px; text-align: center; color: var(--text-dim); font-size: 12px; }
+
+.toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: var(--surface);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius);
+    padding: 10px 16px;
+    font-size: 13px;
+    color: var(--text);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    transform: translateY(10px);
+    opacity: 0;
+    transition: all 0.2s ease;
+    pointer-events: none;
+    z-index: 300;
+    max-width: 320px;
+}
+
+.toast.visible { transform: translateY(0); opacity: 1; }
+
+.toast.toast-success { border-color: rgba(34, 197, 94, 0.4); }
+.toast.toast-error { border-color: rgba(239, 68, 68, 0.4); }
+.toast.toast-info { border-color: rgba(59, 130, 246, 0.4); }
+
+.stats-bar {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+}
+
+.stat-card .stat-label {
+    font-size: 11px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    margin-bottom: 4px;
+}
+
+.stat-card .stat-value {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+}
+
+.stat-card .stat-value.mono { font-family: var(--font-mono); font-size: 18px; }
+
+.stat-card .stat-delta {
+    font-size: 11px;
+    color: var(--success);
+    margin-left: 6px;
+    font-weight: 500;
+}
+
+.tabs-bar {
+    display: flex;
+    gap: 2px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 20px;
+}
+
+.tabs-bar button {
+    background: none;
+    border: none;
+    padding: 8px 14px;
+    font-size: 13px;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: color 0.15s, border-color 0.15s;
+}
+
+.tabs-bar button:hover { color: var(--text); }
+.tabs-bar button.active { color: var(--text); border-bottom-color: var(--accent); }
+
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+.license-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+}
+.license-row:last-child { border-bottom: none; }
+.license-key { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); }
+
+.copy-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    padding: 2px 8px;
+    font-size: 10px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-family: var(--font-mono);
+}
+.copy-btn:hover { color: var(--text); border-color: var(--border-light); }
+
+.cart-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cart-count {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    background: var(--accent);
+    color: #000;
+    font-size: 9px;
+    font-weight: 600;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono);
+}
+
+.cart-count.hidden { display: none; }
+
+.timeline {
+    position: relative;
+    padding-left: 20px;
+}
+.timeline::before {
+    content: "";
+    position: absolute;
+    left: 6px;
+    top: 4px;
+    bottom: 4px;
+    width: 1px;
+    background: var(--border);
+}
+.timeline-item {
+    position: relative;
+    padding-bottom: 16px;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+.timeline-item::before {
+    content: "";
+    position: absolute;
+    left: -17px;
+    top: 5px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--text-dim);
+}
+.timeline-item.done::before { background: var(--success); }
+.timeline-item.pending::before { background: var(--accent); }
+.timeline-item .tl-time { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); display: block; margin-bottom: 2px; }
+
+.ticket-list { display: flex; flex-direction: column; gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+.ticket-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: var(--surface); font-size: 12px; }
+.ticket-row .tr-id { font-family: var(--font-mono); color: var(--text-dim); font-size: 11px; min-width: 60px; }
+.ticket-row .tr-subject { flex: 1; color: var(--text); margin: 0 12px; }
+.ticket-row .tr-status { font-size: 10px; text-transform: uppercase; letter-spacing: 0.4px; padding: 2px 6px; border-radius: 3px; background: var(--surface-3); color: var(--text-muted); }
+.ticket-row .tr-status.open { background: rgba(34, 197, 94, 0.15); color: var(--success); }
+.ticket-row .tr-status.closed { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
+
+footer {
+    border-top: 1px solid var(--border);
+    padding: 24px;
+    max-width: 1280px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: var(--text-dim);
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.footer-links { display: flex; gap: 16px; }
+.footer-links a:hover { color: var(--text-muted); }
+
+.kbd-hint {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    margin-left: 6px;
+}
+.kbd-hint kbd {
+    padding: 1px 4px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    font-size: 9px;
+}
+
+@media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; }
+    .sidebar { position: static; flex-direction: row; overflow-x: auto; }
+    .sidebar-group { min-width: 140px; }
+    nav.main-nav { display: none; }
+    .search-trigger { min-width: auto; }
+    .search-trigger span { display: none; }
+    .stats-bar { grid-template-columns: repeat(2, 1fr); }
+    .plugin-stats { display: none; }
+}
+
+@media (max-width: 600px) {
+    .header-inner { padding: 0 4px; }
+    main { padding: 20px 12px 60px; }
+    .stats-bar { grid-template-columns: 1fr 1fr; }
+    .plugin-actions { flex-direction: column; align-items: flex-end; gap: 6px; }
+    .drawer { width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<div class="announcement" id="announcement">
+    <strong>FlammableLib v1.4.2</strong> released — custom packet wrappers and NBT serialization fixes.
+    <button class="close-ann" onclick="dismissAnnouncement()" aria-label="Dismiss">&times;</button>
+</div>
+
+<header>
+    <div class="header-inner">
+        <a href="#" class="brand">
+            <span class="brand-mark">F</span>
+            Flammable Corp.
+        </a>
+        <nav class="main-nav">
+            <a href="#" class="active">Plugins</a>
+            <a href="#" onclick="showTab('analytics')">Analytics</a>
+            <a href="#" onclick="showTab('licenses')">Licenses</a>
+            <a href="#" onclick="openTickets()">Support</a>
+            <a href="#" onclick="openModal('docsModal')">Docs</a>
+        </nav>
+        <div class="header-right" id="headerActions">
+            <button class="search-trigger" onclick="openPalette()">
+                <span class="search-icon" aria-hidden="true">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                </span>
+                <span>Search or jump to...</span>
+                <kbd>Ctrl K</kbd>
+            </button>
+            <button class="icon-btn" onclick="toggleTheme()" title="Toggle theme" id="themeBtn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+            </button>
+            <button class="icon-btn cart-btn" onclick="openModal('cartModal')" title="Cart">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
+                <span class="cart-count hidden" id="cartCount">0</span>
+            </button>
+            <button class="btn btn-secondary btn-sm" onclick="openLogin()">Sign in</button>
+        </div>
+    </div>
+</header>
+
+<main>
+    <div class="stats-bar" id="statsBar">
+        <div class="stat-card">
+            <div class="stat-label">Plugins available</div>
+            <div class="stat-value mono" id="statPlugins">2</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Active servers</div>
+            <div class="stat-value mono" id="statServers">1,284<span class="stat-delta">+12</span></div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Downloads this week</div>
+            <div class="stat-value mono" id="statDownloads">3,847</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Your balance</div>
+            <div class="stat-value mono" id="statBalance">$250.00</div>
+        </div>
+    </div>
+
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="sidebar-group">
+                <h4>Browse</h4>
+                <a href="#" class="active" onclick="filterCategory('all'); return false;">All plugins <span class="count" id="countAll">2</span></a>
+                <a href="#" onclick="filterCategory('core'); return false;">Core <span class="count" id="countCore">1</span></a>
+                <a href="#" onclick="filterCategory('cosmetic'); return false;">Cosmetic <span class="count" id="countCosmetic">1</span></a>
+                <a href="#" onclick="filterCategory('utility'); return false;">Utility <span class="count" id="countUtility">0</span></a>
+            </div>
+            <div class="sidebar-group">
+                <h4>Account</h4>
+                <a href="#" onclick="openModal('ordersModal'); return false;">Order history</a>
+                <a href="#" onclick="openModal('licensesModal'); return false;">Licenses</a>
+                <a href="#" onclick="openTickets(); return false;">Support tickets</a>
+                <a href="#" onclick="openModal('settingsModal'); return false;">Settings</a>
+            </div>
+            <div class="sidebar-group">
+                <h4>Resources</h4>
+                <a href="#" onclick="openModal('docsModal'); return false;">Documentation</a>
+                <a href="#" onclick="openModal('changelogModal'); return false;">Changelog</a>
+                <a href="#" onclick="openModal('statusModal'); return false;">System status</a>
+            </div>
+        </aside>
+
+        <div class="content">
+            <div class="tabs-bar">
+                <button class="active" onclick="showTab('plugins', this)">Plugins</button>
+                <button onclick="showTab('analytics', this)">Analytics</button>
+                <button onclick="showTab('licenses', this)">Licenses</button>
+            </div>
+
+            <div class="tab-panel active" id="tab-plugins">
+                <div class="page-intro">
+                    <div>
+                        <h1>Plugins</h1>
+                        <p>Server-side utilities and cosmetic extensions for Paper and Spigot. Built for stability and low overhead.</p>
+                    </div>
+                    <div class="view-toggle">
+                        <button class="active" onclick="setView('list', this)">List</button>
+                        <button onclick="setView('grid', this)">Grid</button>
+                    </div>
+                </div>
+
+                <div class="toolbar">
+                    <div class="toolbar-search">
+                        <span class="search-icon">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                        </span>
+                        <input type="text" id="pluginSearch" placeholder="Filter plugins..." oninput="filterPlugins()">
+                    </div>
+                    <select class="sort-select" id="sortSelect" onchange="sortPlugins()">
+                        <option value="name">Name (A–Z)</option>
+                        <option value="price-asc">Price (low → high)</option>
+                        <option value="price-desc">Price (high → low)</option>
+                        <option value="downloads">Most downloaded</option>
+                        <option value="updated">Recently updated</option>
+                    </select>
+                    <button class="btn btn-secondary btn-sm" onclick="clearFilters()">Reset</button>
+                </div>
+
+                <div class="plugin-list" id="pluginList"></div>
+                <div class="empty-state" id="emptyState" style="display:none;">
+                    <h3>No plugins match your filters</h3>
+                    <p>Try adjusting the search or resetting the filters.</p>
+                </div>
+            </div>
+
+            <div class="tab-panel" id="tab-analytics">
+                <div class="page-intro">
+                    <div>
+                        <h1>Analytics</h1>
+                        <p>Usage metrics across your account and the plugins you own.</p>
+                    </div>
+                </div>
+                <div class="stats-bar" style="grid-template-columns: repeat(2, 1fr);">
+                    <div class="stat-card">
+                        <div class="stat-label">Total downloads</div>
+                        <div class="stat-value mono">3,847</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Average rating</div>
+                        <div class="stat-value mono">4.8 / 5.0</div>
+                    </div>
+                </div>
+                <h3 style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.6px; color: var(--text-dim); margin: 24px 0 12px;">Recent activity</h3>
+                <div class="timeline" id="activityTimeline"></div>
+            </div>
+
+            <div class="tab-panel" id="tab-licenses">
+                <div class="page-intro">
+                    <div>
+                        <h1>Your licenses</h1>
+                        <p>License keys for plugins you have purchased. Click to copy.</p>
+                    </div>
+                </div>
+                <div id="licenseList">
+                    <div class="license-row">
+                        <div>
+                            <div style="font-weight: 500;">CustomRanksPlus</div>
+                            <div class="license-key">FLM-CRP-8K2J-9XQ1</div>
+                        </div>
+                        <button class="copy-btn" onclick="copyLicense('FLM-CRP-8K2J-9XQ1', this)">Copy</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <span>Flammable Corp. Not affiliated with Mojang or Microsoft.</span>
+    <div class="footer-links">
+        <a href="#" onclick="openModal('termsModal'); return false;">Terms</a>
+        <a href="#" onclick="openModal('privacyModal'); return false;">Privacy</a>
+        <a href="#" onclick="openModal('statusModal'); return false;">Status</a>
+    </div>
+</footer>
+
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+<aside class="drawer" id="pluginDrawer">
+    <div class="drawer-head">
+        <div class="drawer-title">
+            <h2 id="drawerTitle">Plugin</h2>
+            <div class="drawer-sub" id="drawerSub">—</div>
+        </div>
+        <button class="icon-btn" onclick="closeDrawer()" aria-label="Close">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+    </div>
+    <div class="drawer-body" id="drawerBody"></div>
+    <div class="drawer-foot" id="drawerFoot"></div>
+</aside>
+
+<div class="modal-overlay" id="loginModal">
+    <div class="modal">
+        <button class="modal-close" onclick="closeModal('loginModal')">&times;</button>
+        <h3>Sign in</h3>
+        <form onsubmit="submitLogin(event)">
+            <div class="form-field">
+                <label>Username</label>
+                <input type="text" id="loginUser" value="Demo" required>
+            </div>
+            <div class="form-field">
+                <label>Password</label>
+                <input type="password" id="loginPass" value="1234" required>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 6px;">Continue</button>
+        </form>
+        <p style="font-size: 11px; color: var(--text-dim); margin-top: 12px; text-align: center;">Demo credentials: Demo / 1234</p>
+    </div>
+</div>
+
+<div class="modal-overlay" id="settingsModal">
+    <div class="modal">
+        <button class="modal-close" onclick="closeModal('settingsModal')">&times;</button>
+        <h3>Settings</h3>
+        <div class="toggle-row">
+            <div>
+                <div class="label">Dark theme</div>
+                <div class="desc">Toggle between dark and light.</div>
+            </div>
+            <button class="toggle on" id="themeToggle" onclick="toggleThemeBtn(this)"></button>
+        </div>
+        <div class="toggle-row">
+            <div>
+                <div class="label">Desktop notifications</div>
+                <div class="desc">Get notified about plugin updates.</div>
+            </div>
+            <button class="toggle on" onclick="this.classList.toggle('on'); notify('Notification setting updated', 'success')"></button>
+        </div>
+        <div class="toggle-row">
+            <div>
+                <div class="label">Auto-update plugins</div>
+                <div class="desc">Update to latest version automatically.</div>
+            </div>
+            <button class="toggle" onclick="this.classList.toggle('on'); notify('Auto-update setting updated', 'success')"></button>
+        </div>
+        <div class="toggle-row">
+            <div>
+                <div class="label">Compact list view</div>
+                <div class="desc">Show more rows per screen.</div>
+            </div>
+            <button class="toggle" onclick="this.classList.toggle('on'); toggleCompact();"></button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="ordersModal">
+    <div class="modal modal-lg">
+        <button class="modal-close" onclick="closeModal('ordersModal')">&times;</button>
+        <h3>Order history</h3>
+        <div class="timeline" id="ordersTimeline">
+            <div class="timeline-item done">
+                <span class="tl-time">2026-09-14 14:32</span>
+                CustomRanksPlus — $11.99 — Completed
+            </div>
+            <div class="timeline-item done">
+                <span class="tl-time">2026-08-02 09:11</span>
+                FlammableLib — Free — Downloaded
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="licensesModal">
+    <div class="modal">
+        <button class="modal-close" onclick="closeModal('licensesModal')">&times;</button>
+        <h3>Licenses</h3>
+        <div class="license-row">
+            <div>
+                <div style="font-weight: 500;">CustomRanksPlus</div>
+                <div class="license-key">FLM-CRP-8K2J-9XQ1</div>
+            </div>
+            <button class="copy-btn" onclick="copyLicense('FLM-CRP-8K2J-9XQ1', this)">Copy</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="ticketsModal">
+    <div class="modal modal-lg">
+        <button class="modal-close" onclick="closeModal('ticketsModal')">&times;</button>
+        <h3>Support tickets</h3>
+        <div class="ticket-list" id="ticketList">
+            <div class="ticket-row">
+                <span class="tr-id">#1042</span>
+                <span class="tr-subject">FlammableLib fails to load on Paper 1.21</span>
+                <span class="tr-status open">Open</span>
+            </div>
+            <div class="ticket-row">
+                <span class="tr-id">#1041</span>
+                <span class="tr-subject">CustomRanksPlus glyph rendering issue</span>
+                <span class="tr-status closed">Closed</span>
+            </div>
+        </div>
+        <button class="btn btn-secondary" style="width: 100%; margin-top: 12px;" onclick="openNewTicket()">New ticket</button>
+    </div>
+</div>
+
+<div class="modal-overlay" id="newTicketModal">
+    <div class="modal">
+        <button class="modal-close" onclick="closeModal('newTicketModal')">&times;</button>
+        <h3>New support ticket</h3>
+        <form onsubmit="submitTicket(event)">
+            <div class="form-field">
+                <label>Subject</label>
+                <input type="text" id="ticketSubject" placeholder="Short summary" required>
+            </div>
+            <div class="form-field">
+                <label>Message</label>
+                <textarea id="ticketMessage" placeholder="Describe the issue..." required></textarea>
+            </div>
+            <div class="form-field">
+                <label>Priority</label>
+                <select id="ticketPriority">
+                    <option>Low</option>
+                    <option selected>Normal</option>
+                    <option>High</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%;">Submit ticket</button>
+        </form>
+    </div>
+</div>
+
+<div class="modal-overlay" id="cartModal">
+    <div class="modal modal-lg">
+        <button class="modal-close" onclick="closeModal('cartModal')">&times;</button>
+        <h3>Your cart</h3>
+        <div id="cartContents">
+            <p style="color: var(--text-muted); font-size: 13px;">Your cart is empty.</p>
+        </div>
+        <div id="cartFooter" style="display: none; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border);">
+            <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 12px;">
+                <span style="color: var(--text-muted);">Subtotal</span>
+                <span id="cartSubtotal" style="font-family: var(--font-mono);">$0.00</span>
+            </div>
+            <button class="btn btn-primary" style="width: 100%;" onclick="checkout()">Checkout</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="docsModal">
+    <div class="modal modal-lg">
+        <button class="modal-close" onclick="closeModal('docsModal')">&times;</button>
+        <h3>Documentation</h3>
+        <div class="form-field">
+            <label>Quick start</label>
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 8px;">Drop FlammableLib into your plugins folder, then add the plugin you want.</p>
+        </div>
+        <div class="form-field">
+            <label>Install command</label>
+            <input type="text" class="mono" value="/plugman load FlammableLib" readonly>
+        </div>
+        <div class="form-field">
+            <label>Configuration example</label>
+            <textarea class="mono" readonly style="min-height: 100px;"># config.yml
+core:
+  async-threads: 4
+  nbt-compression: true
+ranks:
+  enabled: true
+  texture-pack: "nexo"</textarea>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="changelogModal">
+    <div class="modal modal-lg">
+        <button class="modal-close" onclick="closeModal('changelogModal')">&times;</button>
+        <h3>Changelog</h3>
+        <div class="changelog-item">
+            <span class="cl-ver">v1.4.2</span><span class="cl-date">2026-10-14</span>
+            <div class="cl-desc">Fixed NBT serialization edge cases. Added custom packet wrapper helpers.</div>
+        </div>
+        <div class="changelog-item">
+            <span class="cl-ver">v1.4.0</span><span class="cl-date">2026-09-28</span>
+            <div class="cl-desc">Introduced async asset pipeline. Reduced startup time by ~40%.</div>
+        </div>
+        <div class="changelog-item">
+            <span class="cl-ver">v1.3.1</span><span class="cl-date">2026-09-02</span>
+            <div class="cl-desc">Fixed a memory leak in the packet listener. Updated Paper 1.21 support.</div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="statusModal">
+    <div class="modal">
+        <button class="modal-close" onclick="closeModal('statusModal')">&times;</button>
+        <h3>System status</h3>
+        <div class="timeline">
+            <div class="timeline-item done"><span class="tl-time">Now</span>API — Operational</div>
+            <div class="timeline-item done"><span class="tl-time">Now</span>Download CDN — Operational</div>
+            <div class="timeline-item done"><span class="tl-time">Now</span>License server — Operational</div>
+            <div class="timeline-item pending"><span class="tl-time">2h ago</span>Web dashboard — Degraded performance</div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="termsModal">
+    <div class="modal modal-lg">
+        <button class="modal-close" onclick="closeModal('termsModal')">&times;</button>
+        <h3>Terms of service</h3>
+        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 10px;">By using Flammable Corp. plugins you agree not to redistribute, resell, or reverse-engineer the software without permission.</p>
+        <p style="font-size: 13px; color: var(--text-muted);">Licenses are per-server. Transferring licenses between servers requires a support ticket.</p>
+    </div>
+</div>
+
+<div class="modal-overlay" id="privacyModal">
+    <div class="modal modal-lg">
+        <button class="modal-close" onclick="closeModal('privacyModal')">&times;</button>
+        <h3>Privacy policy</h3>
+        <p style="font-size: 13px; color: var(--text-muted);">We collect minimal data required to operate: account name, server identifiers, and license keys. No analytics or tracking scripts.</p>
+    </div>
+</div>
+
+<div class="command-palette-overlay" id="paletteOverlay" onclick="if(event.target === this) closePalette()">
+    <div class="command-palette">
+        <input type="text" class="palette-input" id="paletteInput" placeholder="Type a command or plugin name..." oninput="filterPalette()" onkeydown="paletteKeydown(event)">
+        <div class="palette-list" id="paletteList"></div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+var currentUser = null;
+var balance = 250.00;
+var cart = [];
+var viewMode = 'list';
+var activeCategory = 'all';
+var plugins = [
+    {
+        id: 'flammablelib',
+        name: 'FlammableLib',
+        icon: 'F',
+        category: 'core',
+        version: 'v1.4.2',
+        price: 0,
+        downloads: 12480,
+        rating: 4.9,
+        updated: '2026-10-14',
+        desc: 'Async core framework, NBT manipulators, packet wrappers, and asset pipeline. Required by all other plugins.',
+        longDesc: 'FlammableLib is the foundation for every Flammable Corp plugin. It provides an asynchronous core framework, NBT serialization helpers, custom packet wrappers, and an asset pipeline that keeps server startup fast and stable.',
+        features: [
+            'Async core framework with configurable thread pool',
+            'NBT manipulation utilities with safe fallbacks',
+            'Custom packet wrappers for Paper and Spigot',
+            'Asset pipeline with compression and caching',
+            'Full documentation and example configs'
+        ],
+        changelog: [
+            { ver: 'v1.4.2', date: '2026-10-14', desc: 'Fixed NBT serialization edge cases. Added packet wrapper helpers.' },
+            { ver: 'v1.4.0', date: '2026-09-28', desc: 'Introduced async asset pipeline. Reduced startup time by ~40%.' },
+            { ver: 'v1.3.1', date: '2026-09-02', desc: 'Fixed a memory leak in the packet listener.' }
+        ]
+    },
+    {
+        id: 'customranksplus',
+        name: 'CustomRanksPlus',
+        icon: 'C',
+        category: 'cosmetic',
+        version: 'v2.1.0',
+        price: 11.99,
+        downloads: 3847,
+        rating: 4.8,
+        updated: '2026-10-02',
+        desc: 'Custom unicode glyphs, rank badges, tablist icons, and animated nameplates with Nexo and Oraxen support.',
+        longDesc: 'CustomRanksPlus extends your server visuals with fully customizable rank displays. It supports custom unicode glyphs, glowing HUD elements, tablist icons, and animated nameplates. Compatible with both Nexo and Oraxen texture pack systems.',
+        features: [
+            'Custom unicode glyphs and rank badges',
+            'Tablist icons with per-rank configuration',
+            'Animated nameplates with configurable timing',
+            'Nexo and Oraxen texture pack integration',
+            'Live preview command for testing rank appearance',
+            'PlaceholderAPI expansion included'
+        ],
+        changelog: [
+            { ver: 'v2.1.0', date: '2026-10-02', desc: 'Added Nexo support. New animated nameplate system.' },
+            { ver: 'v2.0.4', date: '2026-08-19', desc: 'Fixed glyph rendering on 1.21.1. Improved performance.' },
+            { ver: 'v2.0.0', date: '2026-07-01', desc: 'Complete rewrite with new config format.' }
+        ]
+    }
+];
+
+var paletteCommands = [
+    { label: 'Go to plugins', action: function() { showTab('plugins'); closePalette(); }, icon: 'P' },
+    { label: 'Go to analytics', action: function() { showTab('analytics'); closePalette(); }, icon: 'A' },
+    { label: 'Go to licenses', action: function() { showTab('licenses'); closePalette(); }, icon: 'L' },
+    { label: 'Open settings', action: function() { openModal('settingsModal'); closePalette(); }, icon: 'S', shortcut: 'Ctrl ,' },
+    { label: 'Open documentation', action: function() { openModal('docsModal'); closePalette(); }, icon: 'D' },
+    { label: 'View changelog', action: function() { openModal('changelogModal'); closePalette(); }, icon: 'C' },
+    { label: 'System status', action: function() { openModal('statusModal'); closePalette(); }, icon: 'S' },
+    { label: 'Support tickets', action: function() { openTickets(); closePalette(); }, icon: 'T' },
+    { label: 'Toggle theme', action: function() { toggleTheme(); closePalette(); }, icon: 'Th', shortcut: 'Ctrl T' },
+    { label: 'Sign out', action: function() { signOut(); closePalette(); }, icon: 'X' }
+];
+
+function notify(msg, type) {
+    var t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast visible' + (type ? ' toast-' + type : '');
+    clearTimeout(window._toastTimer);
+    window._toastTimer = setTimeout(function() {
+        t.classList.remove('visible');
+    }, 2800);
+}
+
+function dismissAnnouncement() {
+    document.getElementById('announcement').style.display = 'none';
+}
+
+function toggleTheme() {
+    var body = document.body;
+    var isLight = body.getAttribute('data-theme') === 'light';
+    body.setAttribute('data-theme', isLight ? 'dark' : 'light');
+    var toggle = document.getElementById('themeToggle');
+    if (toggle) toggle.classList.toggle('on', !isLight);
+    notify('Theme: ' + (isLight ? 'Dark' : 'Light'));
+}
+
+function toggleThemeBtn(el) {
+    el.classList.toggle('on');
+    toggleTheme();
+}
+
+function toggleCompact() {
+    var list = document.getElementById('pluginList');
+    var rows = list.querySelectorAll('.plugin-row');
+    rows.forEach(function(r) {
+        r.style.padding = r.style.padding === '8px 18px' ? '14px 18px' : '8px 18px';
+    });
+    notify('Compact view toggled');
+}
+
+function openModal(id) {
+    document.getElementById(id).classList.add('open');
+}
+
+function closeModal(id) {
+    document.getElementById(id).classList.remove('open');
+}
+
+function openLogin() {
+    openModal('loginModal');
+}
+
+function submitLogin(e) {
+    e.preventDefault();
+    var u = document.getElementById('loginUser').value;
+    var p = document.getElementById('loginPass').value;
+    if (u.toLowerCase() === 'demo' && p === '1234') {
+        currentUser = 'Demo';
+        closeModal('loginModal');
+        renderHeader();
+        notify('Signed in as Demo', 'success');
+    } else {
+        notify('Invalid credentials', 'error');
+    }
+}
+
+function signOut() {
+    currentUser = null;
+    renderHeader();
+    notify('Signed out');
+}
+
+function renderHeader() {
+    var area = document.getElementById('headerActions');
+    var loginBtn = area.querySelector('.btn-secondary');
+    if (currentUser) {
+        if (loginBtn) loginBtn.style.display = 'none';
+        var existing = area.querySelector('.user-badge');
+        if (!existing) {
+            var badge = document.createElement('div');
+            badge.className = 'user-badge';
+            badge.innerHTML = '<div class="user-avatar"><img src="https://mc-heads.net/head/WhoIsProplay/48" alt=""></div><span>' + currentUser + '</span><span class="user-balance" id="headerBalance">$' + balance.toFixed(2) + '</span>';
+            var signOutBtn = document.createElement('button');
+            signOutBtn.className = 'btn btn-secondary btn-sm';
+            signOutBtn.textContent = 'Sign out';
+            signOutBtn.onclick = signOut;
+            area.appendChild(badge);
+            area.appendChild(signOutBtn);
+        }
+    } else {
+        if (loginBtn) loginBtn.style.display = '';
+        var b = area.querySelector('.user-badge');
+        if (b) b.remove();
+        var allBtns = area.querySelectorAll('.btn-secondary');
+        allBtns.forEach(function(btn, i) { if (i > 0) btn.remove(); });
+    }
+    updateBalanceDisplay();
+}
+
+function updateBalanceDisplay() {
+    var statBal = document.getElementById('statBalance');
+    if (statBal) statBal.textContent = '$' + balance.toFixed(2);
+    var hb = document.getElementById('headerBalance');
+    if (hb) hb.textContent = '$' + balance.toFixed(2);
+}
+
+function renderPlugins() {
+    var list = document.getElementById('pluginList');
+    var filtered = plugins.filter(function(p) {
+        if (activeCategory !== 'all' && p.category !== activeCategory) return false;
+        var q = document.getElementById('pluginSearch').value.toLowerCase();
+        if (q && p.name.toLowerCase().indexOf(q) === -1 && p.desc.toLowerCase().indexOf(q) === -1) return false;
+        return true;
+    });
+
+    var sort = document.getElementById('sortSelect').value;
+    filtered.sort(function(a, b) {
+        if (sort === 'name') return a.name.localeCompare(b.name);
+        if (sort === 'price-asc') return a.price - b.price;
+        if (sort === 'price-desc') return b.price - a.price;
+        if (sort === 'downloads') return b.downloads - a.downloads;
+        if (sort === 'updated') return new Date(b.updated) - new Date(a.updated);
+        return 0;
+    });
+
+    document.getElementById('emptyState').style.display = filtered.length ? 'none' : 'block';
+    list.className = viewMode === 'grid' ? 'plugin-list grid-view' : 'plugin-list';
+
+    list.innerHTML = filtered.map(function(p) {
+        return '<div class="plugin-row" data-id="' + p.id + '" onclick="openDrawer(\'' + p.id + '\')">' +
+            '<div class="plugin-info">' +
+                '<div class="plugin-icon">' + p.icon + '</div>' +
+                '<div class="plugin-meta">' +
+                    '<div class="plugin-name">' + p.name +
+                        (p.category === 'core' ? '<span class="badge">Dependency</span>' : '') +
+                        (p.price === 0 ? '<span class="badge free">Free</span>' : '') +
+                    '</div>' +
+                    '<div class="plugin-desc">' + p.desc + '</div>' +
+                    '<div class="plugin-stats">' +
+                        '<span>' + p.downloads.toLocaleString() + ' downloads</span>' +
+                        '<span>★ ' + p.rating + '</span>' +
+                        '<span>Updated ' + p.updated + '</span>' +
+                    '</div>' +
+                '</div>' +
+            '</div>' +
+            '<div class="plugin-actions">' +
+                '<span class="plugin-version">' + p.version + '</span>' +
+                '<span class="plugin-price' + (p.price === 0 ? ' free' : '') + '">' + (p.price === 0 ? 'Free' : '$' + p.price.toFixed(2)) + '</span>' +
+                '<button class="btn ' + (p.price === 0 ? 'btn-secondary' : 'btn-primary') + ' btn-sm" onclick="event.stopPropagation(); handleAction(\'' + p.id + '\')">' + (p.price === 0 ? 'Download' : 'Buy') + '</button>' +
+            '</div>' +
+        '</div>';
+    }).join('');
+}
+
+function handleAction(id) {
+    var p = plugins.find(function(x) { return x.id === id; });
+    if (!p) return;
+
+    if (p.price === 0) {
+        if (!currentUser) { openLogin(); notify('Sign in required', 'error'); return; }
+        notify('Download started: ' + p.name, 'success');
+        return;
+    }
+
+    if (!currentUser) { openLogin(); notify('Sign in required', 'error'); return; }
+
+    cart.push(p.id);
+    updateCartCount();
+    notify(p.name + ' added to cart', 'success');
+}
+
+function updateCartCount() {
+    var c = document.getElementById('cartCount');
+    c.textContent = cart.length;
+    c.classList.toggle('hidden', cart.length === 0);
+}
+
+function openDrawer(id) {
+    var p = plugins.find(function(x) { return x.id === id; });
+    if (!p) return;
+
+    document.getElementById('drawerTitle').textContent = p.name;
+    document.getElementById('drawerSub').textContent = p.version + ' — ' + p.category + ' — updated ' + p.updated;
+
+    var body = document.getElementById('drawerBody');
+    body.innerHTML =
+        '<h3>About</h3>' +
+        '<p>' + p.longDesc + '</p>' +
+        '<h3>Features</h3>' +
+        '<ul>' + p.features.map(function(f) { return '<li>' + f + '</li>'; }).join('') + '</ul>' +
+        '<h3>Changelog</h3>' +
+        p.changelog.map(function(c) {
+            return '<div class="changelog-item"><span class="cl-ver">' + c.ver + '</span><span class="cl-date">' + c.date + '</span><div class="cl-desc">' + c.desc + '</div></div>';
+        }).join('') +
+        '<h3>Stats</h3>' +
+        '<p>' + p.downloads.toLocaleString() + ' downloads · ★ ' + p.rating + ' · ' + p.version + '</p>';
+
+    var foot = document.getElementById('drawerFoot');
+    if (p.price === 0) {
+        foot.innerHTML = '<button class="btn btn-primary" onclick="handleAction(\'' + p.id + '\')">Download</button>';
+    } else {
+        foot.innerHTML = '<button class="btn btn-secondary" onclick="openModal(\'docsModal\')">View docs</button><button class="btn btn-primary" onclick="handleAction(\'' + p.id + '\')">Add to cart — $' + p.price.toFixed(2) + '</button>';
+    }
+
+    document.getElementById('drawerOverlay').classList.add('open');
+    document.getElementById('pluginDrawer').classList.add('open');
+}
+
+function closeDrawer() {
+    document.getElementById('drawerOverlay').classList.remove('open');
+    document.getElementById('pluginDrawer').classList.remove('open');
+}
+
+function filterPlugins() { renderPlugins(); }
+
+function sortPlugins() { renderPlugins(); }
+
+function clearFilters() {
+    document.getElementById('pluginSearch').value = '';
+    document.getElementById('sortSelect').value = 'name';
+    activeCategory = 'all';
+    document.querySelectorAll('.sidebar-group a').forEach(function(a) { a.classList.remove('active'); });
+    document.querySelector('.sidebar-group a').classList.add('active');
+    renderPlugins();
+}
+
+function filterCategory(cat) {
+    activeCategory = cat;
+    document.querySelectorAll('.sidebar-group a').forEach(function(a) { a.classList.remove('active'); });
+    event.target.closest('a').classList.add('active');
+    renderPlugins();
+}
+
+function setView(mode, btn) {
+    viewMode = mode;
+    document.querySelectorAll('.view-toggle button').forEach(function(b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+    renderPlugins();
+}
+
+function showTab(tabName, btn) {
+    document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
+    var panel = document.getElementById('tab-' + tabName);
+    if (panel) panel.classList.add('active');
+    document.querySelectorAll('.tabs-bar button').forEach(function(b) { b.classList.remove('active'); });
+    if (btn) btn.classList.add('active');
+    else {
+        var tabs = document.querySelectorAll('.tabs-bar button');
+        tabs.forEach(function(b) { if (b.textContent.toLowerCase() === tabName) b.classList.add('active'); });
+    }
+}
+
+function copyLicense(key, btn) {
+    navigator.clipboard.writeText(key).then(function() {
+        notify('License copied to clipboard', 'success');
+        if (btn) { btn.textContent = 'Copied'; setTimeout(function() { btn.textContent = 'Copy'; }, 1500); }
+    });
+}
+
+function openTickets() {
+    openModal('ticketsModal');
+}
+
+function openNewTicket() {
+    closeModal('ticketsModal');
+    openModal('newTicketModal');
+}
+
+function submitTicket(e) {
+    e.preventDefault();
+    var subj = document.getElementById('ticketSubject').value;
+    var list = document.getElementById('ticketList');
+    var row = document.createElement('div');
+    row.className = 'ticket-row';
+    row.innerHTML = '<span class="tr-id">#' + (1043 + Math.floor(Math.random() * 100)) + '</span><span class="tr-subject">' + subj + '</span><span class="tr-status open">Open</span>';
+    list.insertBefore(row, list.firstChild);
+    closeModal('newTicketModal');
+    document.getElementById('ticketSubject').value = '';
+    document.getElementById('ticketMessage').value = '';
+    notify('Ticket submitted', 'success');
+}
+
+function checkout() {
+    if (cart.length === 0) return;
+    var total = cart.reduce(function(sum, id) {
+        var p = plugins.find(function(x) { return x.id === id; });
+        return sum + (p ? p.price : 0);
+    }, 0);
+
+    if (balance < total) {
+        notify('Insufficient balance', 'error');
+        return;
+    }
+
+    balance -= total;
+    cart = [];
+    updateCartCount();
+    updateBalanceDisplay();
+    renderCart();
+    closeModal('cartModal');
+    notify('Purchase complete', 'success');
+}
+
+function renderCart() {
+    var contents = document.getElementById('cartContents');
+    var footer = document.getElementById('cartFooter');
+    if (cart.length === 0) {
+        contents.innerHTML = '<p style="color: var(--text-muted); font-size: 13px;">Your cart is empty.</p>';
+        footer.style.display = 'none';
+        return;
+    }
+    var total = 0;
+    contents.innerHTML = cart.map(function(id) {
+        var p = plugins.find(function(x) { return x.id === id; });
+        total += p.price;
+        return '<div class="license-row"><div><div style="font-weight: 500;">' + p.name + '</div><div class="license-key">' + p.version + '</div></div><span style="font-family: var(--font-mono);">$' + p.price.toFixed(2) + '</span></div>';
+    }).join('');
+    document.getElementById('cartSubtotal').textContent = '$' + total.toFixed(2);
+    footer.style.display = 'block';
+}
+
+function openPalette() {
+    document.getElementById('paletteOverlay').classList.add('open');
+    document.getElementById('paletteInput').value = '';
+    filterPalette();
+    setTimeout(function() { document.getElementById('paletteInput').focus(); }, 50);
+}
+
+function closePalette() {
+    document.getElementById('paletteOverlay').classList.remove('open');
+}
+
+function filterPalette() {
+    var q = document.getElementById('paletteInput').value.toLowerCase();
+    var list = document.getElementById('paletteList');
+    var items = paletteCommands.filter(function(c) { return c.label.toLowerCase().indexOf(q) !== -1; });
+    if (items.length === 0) {
+        list.innerHTML = '<div class="palette-empty">No matching commands</div>';
+        return;
+    }
+    list.innerHTML = items.map(function(c, i) {
+        return '<div class="palette-item' + (i === 0 ? ' active' : '') + '" onclick="' + c.action.toString().replace(/"/g, '&quot;') + '">' +
+            '<div class="pi-icon">' + c.icon + '</div>' +
+            '<div class="pi-label">' + c.label + '</div>' +
+            (c.shortcut ? '<div class="pi-shortcut">' + c.shortcut + '</div>' : '') +
+        '</div>';
+    }).join('');
+}
+
+function paletteKeydown(e) {
+    if (e.key === 'Escape') { closePalette(); return; }
+    if (e.key === 'Enter') {
+        var active = document.querySelector('.palette-item.active');
+        if (active) active.click();
+    }
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        var items = document.querySelectorAll('.palette-item');
+        var idx = Array.from(items).findIndex(function(i) { return i.classList.contains('active'); });
+        items.forEach(function(i) { i.classList.remove('active'); });
+        var newIdx = e.key === 'ArrowDown' ? Math.min(idx + 1, items.length - 1) : Math.max(idx - 1, 0);
+        if (items[newIdx]) items[newIdx].classList.add('active');
+    }
+}
+
+document.addEventListener('keydown', function(e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        openPalette();
+    }
+    if (e.key === 'Escape') {
+        closePalette();
+        document.querySelectorAll('.modal-overlay.open').forEach(function(m) { m.classList.remove('open'); });
+        closeDrawer();
+    }
+});
+
+document.querySelectorAll('.modal-overlay').forEach(function(m) {
+    m.addEventListener('click', function(e) {
+        if (e.target === m) m.classList.remove('open');
+    });
+});
+
+(function init() {
+    renderPlugins();
+    renderCart();
+    var activity = [
+        { time: '2 hours ago', text: 'Downloaded FlammableLib v1.4.2' },
+        { time: '1 day ago', text: 'Purchased CustomRanksPlus' },
+        { time: '3 days ago', text: 'Submitted support ticket #1042' },
+        { time: '1 week ago', text: 'Account created' }
+    ];
+    var timeline = document.getElementById('activityTimeline');
+    if (timeline) {
+        timeline.innerHTML = activity.map(function(a) {
+            return '<div class="timeline-item done"><span class="tl-time">' + a.time + '</span>' + a.text + '</div>';
+        }).join('');
+    }
+    var orders = [
+        { time: '2026-09-14 14:32', text: 'CustomRanksPlus — $11.99 — Completed' },
+        { time: '2026-08-02 09:11', text: 'FlammableLib — Free — Downloaded' }
+    ];
+    var ot = document.getElementById('ordersTimeline');
+    if (ot) {
+        ot.innerHTML = orders.map(function(o) {
+            return '<div class="timeline-item done"><span class="tl-time">' + o.time + '</span>' + o.text + '</div>';
+        }).join('');
+    }
+})();
+</script>
+
+</body>
+</html>
